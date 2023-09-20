@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Human Target Detection</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #e6f7ff, #ccf2ff);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+</head>
+
+<body>
+    <h1>Human Target Detection</h1>
+
+    <!-- Replace the image source with the correct path -->
+    <img id="video-feed-image" src="/home/adlab105/Downloads/halahala (1).jpg" alt="Image placeholder" >
+
+    <div>
+       
+        <h3>FLIR Image</h3>
+        
+        <img id="video-feed-image1" src=" " />
+    </div>
+    <button type="button" onclick="show()" id="btnID">
+        Show Image
+    </button>
+    <script>
+        function show() {
+            /* Get image and change value
+            of src attribute */
+            let image = document.getElementById("video-feed-image1");
+            image.src =
+            "/home/adlab105/Downloads/halahala (2).jpg"
+            document.getElementById("btnID")
+                .style.display = "none";
+        }
+    </script>
+    <button id="detect-anomaly-button" disabled>Detect Anomaly</button>
+    <div id="alerts"></div>
+
+    <!-- Define audio elements for sound effects -->
+    <audio id="anomaly-sound" src="anomaly.mp3"></audio>
+
+    <script>
+        const videoImageElement = document.getElementById('video-feed-image');
+        const startStopButton = document.getElementById('start-stop-button');
+        const detectAnomalyButton = document.getElementById('detect-anomaly-button');
+        const alertsDiv = document.getElementById('alerts');
+        const anomalySound = document.getElementById('anomaly-sound');
+        let model;
+
+        async function loadModel() {
+            model = await cocoSsd.load();
+        }
+
+        async function startVideoFeed() {
+            try {
+                videoImageElement.style.display = 'none'; // Hide the image
+                startStopButton.textContent = 'Stop';
+                detectAnomalyButton.disabled = false;
+            } catch (error) {
+                console.error('Error starting video feed:', error);
+            }
+        }
+
+        function stopVideoFeed() {
+            videoImageElement.style.display = 'block'; // Show the image
+            startStopButton.textContent = 'Start';
+            detectAnomalyButton.disabled = true;
+            alertsDiv.innerHTML = '';
+        }
+
+        async function detectAnomaly() {
+            try {
+                alertsDiv.innerHTML = 'Detecting anomaly...';
+                // Perform anomaly detection logic here
+
+                // For demonstration purposes, simulate an anomaly detection delay
+                setTimeout(() => {
+                    alertsDiv.innerHTML = 'Anomaly detected!';
+                    playAnomalySound();
+                }, 2000); // Simulate a 2-second delay
+            } catch (error) {
+                console.error('Anomaly detection failed:', error);
+                alertsDiv.innerHTML = 'Anomaly detection failed';
+            }
+        }
+
+        function playAnomalySound() {
+            anomalySound.play();
+        }
+
+        startStopButton.addEventListener('click', () => {
+            if (videoImageElement.style.display === 'none') {
+                stopVideoFeed();
+            } else {
+                startVideoFeed();
+            }
+        });
+
+        detectAnomalyButton.addEventListener('click', () => {
+            detectAnomaly();
+        });
+
+        loadModel(); // Load the object detection model when the page loads
+    </script>
+</body>
+
+</html>
